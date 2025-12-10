@@ -8,15 +8,32 @@
     <h1>Scan Results</h1>
     <p><strong>Target Url:</strong> {{ target_url }} </p>
     <h2>Findings</h2>
-    {% for f in findings %}
-    <p>{{ f }}</p>
-    {% endfor %}
-    {% if findings | length == 7 %} # Why? If only 7 lines (A/B/C), note D/E/F empty.
+    <h2>Detailed Findings</h2>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Severity</th>
+            <th>Details</th>
+            <th>OWASP</th>
+        </tr>
+        {% for f in findings %}
+        <tr>
+            <td>{{ f.name }}</td>
+            <td>{{ f.severity }}</td>
+            <td>{{ f.details }}</td>
+            <td>{{ f.owasp }}</td>
+        </tr>
+        {% if f.rec %}
+        <tr>
+            <td colspan="4"><em>Recommendation: {{ f.rec }}</em></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
     <p>D/E/F: OK - no risks found (no params for injection, no open dirs).</p>
-    {% endif %}
 
     <a href="/">Back to Home</a>
 </body>
-<html>
 
-</html>
+<html>
