@@ -6,34 +6,51 @@
 
 <body>
     <h1>Scan Results</h1>
-    <p><strong>Target Url:</strong> {{ target_url }} </p>
-    <h2>Findings</h2>
+
+    <P>
+        <strong>Target URL:</strong> {{ target_url }} <br>
+        <strong>Time:</strong> {{ scan_time }} <br>
+        <strong>HTTP Status:</strong> {{ http_status }}
+    <p>
+
+    <h2>Summary</h2>
+    <ul>
+        <li><strong>Total Checks:</strong> {{ total_checks }}</li>
+        <li><strong>Warnings:</strong> {{ warnings }}</li>
+        <li><strong>Info:</strong> {{ info }}</li>
+        <li><strong>OK:</strong> {{ oks }}</li>
+    </ul>
+
     <h2>Detailed Findings</h2>
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Severity</th>
-            <th>Details</th>
-            <th>OWASP</th>
-        </tr>
-        {% for f in findings %}
-        <tr>
-            <td>{{ f.name }}</td>
-            <td>{{ f.severity }}</td>
-            <td>{{ f.details }}</td>
-            <td>{{ f.owasp }}</td>
-        </tr>
-        {% if f.rec %}
-        <tr>
-            <td colspan="4"><em>Recommendation: {{ f.rec }}</em></td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </table>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Check Name</th>
+                <th>Severity</th>
+                <th>Details</th>
+                <th>OWASP Mapping</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in findings %}
+            <tr>
+                <td>{{ f.name }}</td>
+                <td>{{ f.severity }}</td>
+                <td>
+                    {{ f.details }}
+                    {% if f.rec %}
+                    <br><br>
+                    <strong>Recommendation:</strong> {{ f.rec }}
+                    {% endif %}
+                </td>
+                <td>{{ f.owasp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
 
-    <p>D/E/F: OK - no risks found (no params for injection, no open dirs).</p>
 
-    <a href="/">Back to Home</a>
+        <br>
+        <a href="/">Back to Home</a>
 </body>
 
 <html>
