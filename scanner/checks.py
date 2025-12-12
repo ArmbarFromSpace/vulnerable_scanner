@@ -140,12 +140,11 @@ def check_directory_listing(url):
              '/rest/admin/application-configuration/', '/ftp/']
 
     vulnerable_keywords = [
-        "Index of /",
-        "Parent Directory",
-        "Last modified",
-        "Size",
-        "[DIR]",
-        "Directory Listing"
+        "index of /",
+        "parent directory",
+        # "last modified",
+        # "[dir]",
+        # "directory listing"
     ]
 
     for p in paths:
@@ -160,8 +159,8 @@ def check_directory_listing(url):
                     if k.lower() in content_lower:
                         if p == '/' and k.lower() in ['listing', 'directory']:
                             continue
-                        found_keyword = True
-                        break
+                    found_keyword = True
+                    break
 
                 if found_keyword:
                     findings.append({
