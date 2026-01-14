@@ -41,6 +41,6 @@ Figuring out how to make the info be shown nicely with HTML.
 
 ## Future Goals
 
-[] 1. Separate get requests into each finding
-[] 2. Research what the mutated get request should look like for each check
-[] 3. Build out 2 mutated get requests for each finding into functions
+[] 1. Separate get requests into each finding.
+[] 2. Research what the mutated get request should look like for each check.
+[] 3. Build out 2 mutated get requests for each finding into functions.
