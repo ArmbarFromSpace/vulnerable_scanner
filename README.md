@@ -5,9 +5,11 @@ A lightweight, Python-based web vulnerability scanner built with Flask. This too
 Warning! This tool is for educational purposes only. Do not scan targets without explicit permission.
 
 ## Tech Stack
+
 Python 3, Flask, Requests
 
 ## Prerequisites
+
 Python 3.x installed.
 
 ## Setup and Use
@@ -38,5 +40,7 @@ Dealing with false positives with most checks (especially Directory Listing).
 Figuring out how to make the info be shown nicely with HTML.
 
 ## Future Goals
-My main goal for Version 2 would be to upgrade the scanner to using headless browser. This would allow the scanner to execute JavaScript and catch DOM-based vulnerabilities.
-I also want to improve the system for checks like mainly the dirctionary list check.
+
+[] 1. Separate get requests into each finding
+[] 2. Research what the mutated get request should look like for each check
+[] 3. Build out 2 mutated get requests for each finding into functions
