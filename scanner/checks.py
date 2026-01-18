@@ -4,11 +4,21 @@ from urllib.parse import urljoin, urlparse, parse_qs, urlencode
 # A: Headers (check 5 headers for missing/OK)
 
 
-def check_security_headers(response, url):
+def check_security_headers(url):
     findings = []
     owasp = "A05:2021 - Security Misconfiguration"
 
-    # check for https
+    try:
+        response = requests.get(url, timeout=5)
+    except Exception as e:
+        findings.append({
+            "name": "Header Check Failed",
+            "severity": "Info",
+            "details": f"Error running check: {str(e)}",
+            "owasp": "N/A"
+        })
+        return findings
+
     is_https = urlparse(url).scheme == 'https'
 
     # define the headers, their short names, and explanations
@@ -93,9 +103,20 @@ def check_https(url):
 # C: Fingerprint check
 
 
-def check_server_fingerprint(response):
+def check_server_fingerprint(url):
     findings = []
     owasp = "A06:2021 - Vulnerable and Outdated Components"
+
+    try:
+        response = requests.get(url, timeout=5)
+    except Exception as e:
+        findings.append({
+            "name": "Fingerprint Check Failed",
+            "severity": "Info",
+            "details": f"Error running check: {str(e)}",
+            "owasp": "N/A"
+        })
+        return findings
 
     # check sever header
     if 'Server' in response.headers:
@@ -105,7 +126,8 @@ def check_server_fingerprint(response):
             "name": "Powered-By Detection",
             "severity": "Info",
             "details": f"Detected {value} (tech: {tech}) from Server header. Check for updates.",
-            "owasp": owasp
+            "owasp": owasp,
+            "tech": tech
         })
 
     # check X-powered-By header
@@ -116,8 +138,8 @@ def check_server_fingerprint(response):
             "name": "Powered-By Detection",
             "severity": "Info",
             "details": f"Detected {value} (tech: {tech}) from X-Powered-By header.",
-            "owasp": owasp
-            # "CVE": "IDK maybe later"
+            "owasp": owasp,
+            "tech": tech
         })
     if not findings:
         findings.append({

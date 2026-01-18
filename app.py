@@ -1,4 +1,3 @@
-# Flask for app, render for HTML, request for form data
 from flask import Flask, render_template, request
 import requests  # For getting the page response
 from scanner.checks import *
@@ -31,9 +30,8 @@ def scan():
         response = None
 
         try:
-            # Gets the page (spec A "Send a GET request")
-            response = requests.get(url, timeout=5, verify=True)
-            http_status = response.status_code
+            ping = requests.get(url, timeout=5, verify=True)
+            http_status = ping.status_code
         except:
             # If bad URL, add note
             all_findings.append({
@@ -43,15 +41,19 @@ def scan():
                 "owasp": "N/A",
                 "rec": None
             })
+            context = {
+                'target_url': url, 'scan_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'http_status': 'Error', 'findings': all_findings,
+                'total_checks': 0, 'warnings': 0, 'info': 0, 'oks': 0
+            }
+            return render_template('report.html', **context)
 
-        if response:  # If GET worked
-            # A: Headers
-            headers_results = check_security_headers(response, url)
-            all_findings += headers_results
-            # C: Fingerprint
-            fingerprint_results = check_server_fingerprint(response)
-            all_findings += fingerprint_results
-
+        # A: Headers
+        headers_results = check_security_headers(url)
+        all_findings += headers_results
+        # C: Fingerprint
+        fingerprint_results = check_server_fingerprint(url)
+        all_findings += fingerprint_results
         # D: Dir Listing
         dir_results = check_directory_listing(url)
         all_findings += dir_results
