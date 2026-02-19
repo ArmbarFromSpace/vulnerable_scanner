@@ -705,7 +705,7 @@ def check_basic_sqli(url):
             score1, reason1 = calculate_delta(baseline, mut1)
             score2, reason2 = calculate_delta(baseline, mut2)
             
-            if score1 > 50: # If we have a signal from the first mutation
+            if score1 > 50:
                 findings.append({
                     "name": "SQL Injection Detected",
                     "severity": "High",

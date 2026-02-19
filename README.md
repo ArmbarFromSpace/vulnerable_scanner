@@ -6,7 +6,7 @@ Warning! This tool is for educational purposes only. Do not scan targets without
 
 ## Tech Stack
 
-Python 3, Flask, Requests
+Python 3, Flask, Requests, BeautifulSoup4
 
 ## Prerequisites
 
@@ -24,24 +24,13 @@ Python 3.x installed.
 
 ## Implemented Checks
 
-I implemented checks for Security Headers (like CSP and X-Frame-Options), HTTPS and TLS usage, Server Fingerprinting, Directory Listing probing, Basic XSS reflection, and Basic SQL Injection errors.
+I implemented active mutation checks for Security Headers (404 fuzzing and Host spoofing), HTTPS/TLS usage (TLS 1.0 downgrades and SNI bypasses), Server Fingerprinting (malformed UTF-8 and TRACE methods), Directory Listing (sensitive file and backup probing), XSS reflection (canary and encoding probes), and SQL Injection (error and balancing triggers).
 
 ## Development Challenges
 
-The first problem was just getting the URL to pass to the checks.
-
-Then I had to switch from having it print string outputs for the checks when I first made it to putting out dictionary outputs for the checks so the HTML report could read them.
-
-Other things I learned or struggled with:
-Setting up a Flask app from scratch.
-Learning to def a function properly.
-Struggling with GitHub trying to pull a past version when I broke the code.
-Dealing with false positives with most checks (especially Directory Listing).
-Figuring out how to make the info be shown nicely with HTML.
+Building this version was a major learning curve as I moved away from simple requests. I researched and implemented specific attacks like Host Header Spoofing, 404 Fuzzing, TLS Downgrades, and Malformed UTF-8 (%ff), which required refactoring the entire codebase into a nested dictionary structure. The hardest part was writing the logic to compare the Baseline against Mutations to detect differences in status codes and response lengths. I also updated the HTML boxes that show the exact payload and evidence, though I still struggled with the logic for Checks D, E, and F and they still dont fully work.
 
 ## Future Goals
 
-My main goal for Version 2 would be to upgrade the scanner to using headless browser. This would allow the scanner to execute JavaScript and catch DOM-based vulnerabilities.
-I also want to improve the system for checks like mainly the dirctionary list check.
-
+at this point I cant think of more goals beside
 ADD a abilty to re do checks independetly
