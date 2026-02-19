@@ -100,7 +100,6 @@ def extract_input_vectors(url, html):
                 vectors.append({'type': 'form', 'param': name, 'url': fuzz_url})
 
     # 3. Fallback: If no inputs found, force a 'q' parameter test
-    # This ensures we always scan SOMETHING
     if not vectors and not parsed.query:
         sep = '&' if '?' in url else '?'
         vectors.append({'type': 'forced', 'param': 'q', 'url': f"{url}{sep}q=FUZZ"})
