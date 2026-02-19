@@ -1,56 +1,116 @@
 <html>
-
-<head>
+  <head>
     <title>Scan Report</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Scan Results</h1>
 
-    <P>
-        <strong>Target URL:</strong> {{ target_url }} <br>
-        <strong>Time:</strong> {{ scan_time }} <br>
-        <strong>HTTP Status:</strong> {{ http_status }}
     <p>
+      <strong>Target URL:</strong> {{ target_url }} <br />
+      <strong>Time:</strong> {{ scan_time }} <br />
+      <strong>HTTP Status:</strong> {{ http_status }}
+    </p>
+
+    <p></p>
 
     <h2>Summary</h2>
     <ul>
-        <li><strong>Total Checks:</strong> {{ total_checks }}</li>
-        <li><strong>Warnings:</strong> {{ warnings }}</li>
-        <li><strong>Info:</strong> {{ info }}</li>
-        <li><strong>OK:</strong> {{ oks }}</li>
+      <li><strong>Total Checks:</strong> {{ total_checks }}</li>
+      <li><strong>Warnings:</strong> {{ warnings }}</li>
+      <li><strong>Info:</strong> {{ info }}</li>
+      <li><strong>OK:</strong> {{ oks }}</li>
     </ul>
 
     <h2>Detailed Findings</h2>
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Check Name</th>
-                <th>Severity</th>
-                <th>Details</th>
-                <th>OWASP Mapping</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for f in findings %}
-            <tr>
-                <td>{{ f.name }}</td>
-                <td>{{ f.severity }}</td>
-                <td>
-                    {{ f.details }}
-                    {% if f.rec %}
-                    <br><br>
-                    <strong>Recommendation:</strong> {{ f.rec }}
-                    {% endif %}
-                </td>
-                <td>{{ f.owasp }}</td>
-            </tr>
+    <table cellpadding="10" cellspacing="0" style="text-align: left">
+      <thead>
+        <tr>
+          <th style="border: 1px solid black">Check Name</th>
+          <th style="border: 1px solid black">Severity</th>
+          <th style="border: 1px solid black">Details</th>
+          <th style="border: 1px solid black">OWASP Mapping</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for group in grouped_findings %}
+        <tr>
+          <td
+            style="
+              border: 1px solid black;
+              font-weight: bold;
+              background-color: #f9f9f9;
+            "
+          >
+            {{ group.category }}
+          </td>
+
+          <td style="border: 1px solid black; text-align: center">
+            {{ group.severity }}
+          </td>
+
+          <td style="border: 1px solid black; vertical-align: top">
+            {% if group["items"] | length == 0 %}
+            <em>No findings.</em>
+            {% endif %} {% for f in group["items"] %}
+            <div
+              style="
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+              "
+            >
+              <strong>{{ f.name }}:</strong> {{ f.details }} {% if
+              f.signal_proof %}
+              <div
+                style="
+                  background-color: #f8f9fa;
+                  border-left: 4px solid #dc3545;
+                  padding: 10px;
+                  margin: 10px 0;
+                  font-family: monospace;
+                  font-size: 0.9em;
+                "
+              >
+                <strong>SIGNAL PROOF:</strong><br /><br />
+
+                <span style="color: #28a745">[BASELINE]</span><br />
+                Status: {{ f.signal_proof.baseline.status }} {% if
+                f.signal_proof.baseline.length %}| Length: {{
+                f.signal_proof.baseline.length }}{% endif %} {% if
+                f.signal_proof.baseline.reflection %}| Reflect: {{
+                f.signal_proof.baseline.reflection }}{% endif %} {% if
+                f.signal_proof.mutations %}
+                <br /><br />
+                <span style="color: #dc3545">[MUTATION]</span><br />
+                {% for m in f.signal_proof.mutations %} Trigger: {{ m.trigger
+                }}<br />
+                Payload: {{ m.payload }}<br />
+                Status: {{ m.status }} {% if m.length %}| Length: {{ m.length
+                }}{% endif %} {% if m.context %}| Context:
+                <b>{{ m.context }}</b>{% endif %} {% if m.logic %}| Logic:
+                <b>{{ m.logic }}</b>{% endif %} {% endfor %} {% endif %}
+              </div>
+              {% endif %} {% if f.verdict %}
+              <br />
+              <i>Analyst Verdict: {{ f.verdict }}</i>
+              {% endif %} {% if f.rec %}
+              <br />
+              <span style="color: #004085"
+                ><strong>Fix:</strong> {{ f.rec }}</span
+              >
+              {% endif %}
+            </div>
             {% endfor %}
-        </tbody>
+          </td>
 
-
-        <br>
-        <a href="/">Back to Home</a>
-</body>
-
-<html>
+          <td style="border: 1px solid black">{{ group.owasp }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br /><br />
+    <a href="/">Back to Home</a>
+  </body>
+</html>
